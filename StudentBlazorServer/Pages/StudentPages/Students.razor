@@ -1,0 +1,110 @@
+﻿@page "/Data/Students"
+
+@using DataAccessLibrary
+@using DataAccessLibrary.Models
+@using StudentBlazorServer.Data
+
+
+@inject IStudentData _db
+
+<h4 style="color:blue;">Insert New Student</h4>
+
+<EditForm Model="@stud" OnValidSubmit="@InsertStudent">
+
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="row">
+        <div class="col col-2">Name</div>
+        <div class="col col-4">
+            <InputText id="Name" @bind-Value="stud.Name"></InputText>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col col-2">Surname</div>
+        <div class="col col-4">
+            <InputText id="Surname" @bind-Value="stud.Surname"></InputText>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col col-2">Age</div>
+        <div class="col col-4">
+            <InputNumber id="Age" @bind-Value="stud.Age"></InputNumber>
+        </div>
+    </div>
+    <p></p>
+    <hr />
+    <div class="row">
+        <div class="col col-2"></div>
+        <div class="col col-4">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </div>
+
+
+
+
+</EditForm>
+<p></p>
+<p></p>
+<p></p>
+<h1 style="color:blue;">List of Students</h1>
+
+
+
+@if (s is null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Surname</th>
+                <th>Age</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var st in s)
+            {
+                <tr>
+                    <td>@st.Name</td>
+                    <td>@st.Surname</td>
+                    <td>@st.Age</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+
+    private List<StudentModel> s;
+    private DisplayStudentModel stud = new DisplayStudentModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        s = await _db.GetStudents();
+
+    }
+
+    private async Task InsertStudent()
+    {
+        StudentModel sm = new StudentModel()
+        {
+            Name = stud.Name,
+            Surname = stud.Surname,
+            Age = stud.Age
+        };
+
+        await _db.InsertStudent(sm);
+
+        s = await _db.GetStudents();
+
+        stud = new DisplayStudentModel();
+    }
+
+}
