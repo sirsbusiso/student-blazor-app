@@ -7,48 +7,60 @@
 
 @inject IStudentData _db
 
-<h4 style="color:blue;">Insert New Student</h4>
 
-<EditForm Model="@stud" OnValidSubmit="@InsertStudent">
 
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-    <div class="row">
-        <div class="col col-2">Name</div>
-        <div class="col col-4">
-            <InputText id="Name" @bind-Value="stud.Name"></InputText>
+@if (IsShown)
+{
+
+    <h4 style="color:blue;">Insert New Student</h4>
+    <EditForm Model="@stud" OnValidSubmit="@InsertStudent">
+
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="row">
+            <div class="col col-2">Name</div>
+            <div class="col col-4">
+                <InputText id="Name" @bind-Value="stud.Name"></InputText>
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col col-2">Surname</div>
-        <div class="col col-4">
-            <InputText id="Surname" @bind-Value="stud.Surname"></InputText>
+        <div class="row">
+            <div class="col col-2">Surname</div>
+            <div class="col col-4">
+                <InputText id="Surname" @bind-Value="stud.Surname"></InputText>
+            </div>
         </div>
-    </div>
 
-    <div class="row">
-        <div class="col col-2">Age</div>
-        <div class="col col-4">
-            <InputNumber id="Age" @bind-Value="stud.Age"></InputNumber>
+        <div class="row">
+            <div class="col col-2">Age</div>
+            <div class="col col-4">
+                <InputNumber id="Age" @bind-Value="stud.Age"></InputNumber>
+            </div>
         </div>
-    </div>
-    <p></p>
-    <hr />
-    <div class="row">
-        <div class="col col-2"></div>
-        <div class="col col-4">
-            <button type="submit" class="btn btn-primary">Submit</button>
+        <p></p>
+        <hr />
+        <div class="row">
+            <div class="col col-2"></div>
+            <div class="col col-4">
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="button" class="btn btn-secondary" @onclick="OnCancel">Cancel</button>
+            </div>
         </div>
-    </div>
 
 
+    </EditForm>
+}
+else
+{
+    <button type="button" class="btn btn-primary" @onclick="OnAddNew">Add New</button>
+}
 
 
-</EditForm>
 <p></p>
 <p></p>
 <p></p>
 <h1 style="color:blue;">List of Students</h1>
+
+
 
 
 
@@ -83,6 +95,8 @@ else
 
     private List<StudentModel> s;
     private DisplayStudentModel stud = new DisplayStudentModel();
+    private bool IsShown { get; set; } = false;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -105,6 +119,18 @@ else
         s = await _db.GetStudents();
 
         stud = new DisplayStudentModel();
+
+        IsShown = false;
+    }
+
+    public void OnAddNew()
+    {
+        IsShown = true;
+    }
+
+    public void OnCancel()
+    {
+        IsShown = false;
     }
 
 }
