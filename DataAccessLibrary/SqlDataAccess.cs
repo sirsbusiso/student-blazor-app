@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Data;
 
 namespace DataAccessLibrary
 {
@@ -22,7 +23,7 @@ namespace DataAccessLibrary
         {
             string connectionString = _config.GetConnectionString(ConnectionStringName);
 
-            using (System.Data.IDbConnection connection = new SqlConnection(connectionString))
+            using (IDbConnection connection = new SqlConnection(connectionString))
             {
                 var data = await connection.QueryAsync<T>(sql, parameters);
 
@@ -32,14 +33,23 @@ namespace DataAccessLibrary
 
         public async Task SaveData<T>(string sql, T parameters)
         {
-
             string connectionString = _config.GetConnectionString(ConnectionStringName);
 
-            using (System.Data.IDbConnection connection = new SqlConnection(connectionString))
+            using (IDbConnection connection = new SqlConnection(connectionString))
             {
                 await connection.ExecuteAsync(sql, parameters);
             }
 
         }
+        public async Task GetData<T>(string sql, T parameters)
+        {
+            string connectionString = _config.GetConnectionString(ConnectionStringName);
+
+            using (IDbConnection connection = new SqlConnection(connectionString))
+            {
+                await connection.ExecuteAsync(sql, parameters);
+            }
+        }
+
     }
 }
